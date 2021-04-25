@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        body {
+            background-image: url(https://user-images.githubusercontent.com/47674775/113698899-9bc12f80-96dd-11eb-8f31-79ad3e3092a8.jpg); /* Путь к фоновому изображению */
+        }
+        .registr {
+            align:center;
+            width: 300px;	height: 300px; /* Размеры */
+            background: white; /* Цвет фона */
+            border: 2px solid #000; /* Белая рамка */
+            border-radius: 40px; /* Радиус скругления */
+        }
+        .input1{
+            text-align: center;
+            width: 80%;
+            padding: 10px 15px;
+            border-width: 0;
+            background-color: #dddddd;
+            outline: none;
+            margin: 0;
+            border-radius: 40px; /* Радиус скругления */
+        }
+        .inpt{
+            background-color: forestgreen;
+            text-align: center;
+            width: 90%;
+            padding: 10px 15px;
+            border-width: 0;
+            color: white;
+            outline: none;
+            margin: 0;
+            border-radius: 40px; /* Радиус скругления */
+        }
+    </style>
+</head>
+<body>
+<div align="center">
+<div class="registr">
+    <br>
+<form th:action="@{/registration}"  method="post">
+    <div><label> User Name : <input class="input1" type="text" name="username"/> </label></div><br>
+    <div><label> Password: <input class="input1" type="password" name="password"/> </label></div><br>
+    <div><input class="inpt" type="submit" value="Sign up"/></div>
+</form>
+</div>
+</div>
+</body>
+</html>
