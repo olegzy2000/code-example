@@ -89,11 +89,10 @@
 </header>
 <body>
 <div class="container mt-5">
-    <div th:each="el : ${book}" class="container mt-5">
-        <form th:action="'/library/'+${el.id}+'/edit'" method="post">
-            <input type="text" th:value="${el.title}" name="title" placeholder="input title of book" class="form-control"><br>
-            <input type="text" th:value="${el.nameOfAuthor}" name="nameOfAuthor" placeholder="input name of author" class="form-control"><br>
-            <textarea type="text" th:text="${el.description}" name="description" placeholder="input description" class="form-control"></textarea><br>
+    <div th:each="el : ${user}" class="container mt-5">
+        <form th:action="'/user/'+${el.id}+'/edit'" method="post">
+            <input type="text" th:value="${el.username}" name="username" placeholder="input username" class="form-control"><br>
+            <input type="text" th:value="${el.roles}" name="role" placeholder="input role" class="form-control"><br>
             <button type="submit" class="btn btn-success">edit</button>
         </form>
     </div>

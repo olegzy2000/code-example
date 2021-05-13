@@ -76,6 +76,7 @@
         }
     </style>
     <meta charset="UTF-8">
+    <title>Library</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 <header>
@@ -89,15 +90,15 @@
 </header>
 <body>
 <div class="container mt-5">
-    <div th:each="el : ${book}" class="container mt-5">
-        <form th:action="'/library/'+${el.id}+'/edit'" method="post">
-            <input type="text" th:value="${el.title}" name="title" placeholder="input title of book" class="form-control"><br>
-            <input type="text" th:value="${el.nameOfAuthor}" name="nameOfAuthor" placeholder="input name of author" class="form-control"><br>
-            <textarea type="text" th:text="${el.description}" name="description" placeholder="input description" class="form-control"></textarea><br>
-            <button type="submit" class="btn btn-success">edit</button>
+    <div th:each="el:${Users}" class="alert alert-info mt-2">
+        <h3 th:text="${el.id}"/>
+        <p th:text="${el.username}"/>
+        <p th:text="${el.roles}"/>
+        <a th:href="'/user/'+${el.id}+'/edit'" class="btn btn-warning">edit</a>
+        <form th:action="'/user/'+${el.id}+'/remove'" method="post"><br>
+            <button class="btn btn-warning" type="submit">remove</button>
         </form>
     </div>
-
 </div>
 </body>
 </html>
