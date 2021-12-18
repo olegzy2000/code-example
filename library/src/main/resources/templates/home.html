@@ -1,90 +1,408 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script src="js/drawService.js"></script>
+<link rel="stylesheet" type="text/css" href="css/drawStyle.css">
 <head>
+
+
     <style>
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
-            font-family: Arial, Helvetica, sans-serif;
+        body {
+            background: #1D1B26;
         }
-
-        h4{
-            margin: 20px 50px;
-        }
-        .navbar a {
-            float: left;
-            font-size: 16px;
+        .sliding-button {
+            width: 200px;
+            background: #1D1B26;
+            text-decoration: none;
             color: white;
+            display: inline-block;
+            position: relative;
+            padding: 15px 30px;
+            border: 1px solid;
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            margin: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
             text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .dropdown {
-            float: left;
             overflow: hidden;
+            letter-spacing: 2px;
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
         }
-
-        .dropdown .dropbtn {
-            cursor: pointer;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font-family: inherit;
-            margin: 0;
-        }
-
-        .navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
-            background-color: #ff0000;
-            border-radius: 100px;
-        }
-
-        .dropdown-content {
-            display: none;
+        .sliding-button:before {
+            content: "";
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            left: 0;
+            top: 0;
+            height: 0;
+            width: 100%;
+            z-index: -1;
+            color: white;
+            background: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
+        }
+        .sliding-button:hover {
+            background: rgba(255, 255, 255, 0);
+        }
+        .sliding-button:hover:before {
+            bottom: 0%;
+            top: auto;
+            height: 100%;
+        }
+        .commonPanel
+        {
+            display: flex;
+            width: 1310px;/*фиксируем ширину обертки*/
+            margin: 0 auto;/*центрируем ее*/
+        }
+        .commandPanel
+        {
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            width: 150px;
+            height: 400px;
+        }
+        .drawPanel
+        {
+            overflow-y: auto;
+            position: relative;
+            margin-left: 200px;
+            width: 1000px;	height: 500px; /* Размеры */
+            outline: 2px solid darkgray; /* Чёрная рамка */
+            border-radius: 10px; /* Радиус скругления */
+            display: flex;
+        }
+        .top
+        {
+            align-items: center;
+            display: flex;
+            width: 1520px;/*фиксируем ширину обертки*/
+            height: 45px;
+            background: darkgray;
         }
 
-        .dropdown-content a {
+
+        a {
             float: none;
-            color: black;
             padding: 12px 16px;
-            text-decoration: none;
             display: block;
             text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none;
+            margin-top: 1px;
+            margin-right: 300px;
+            margin-left: 140px;
+            width: 150px;
+            height:15px;
+            color: #E7E5DD;
+            border-radius: 30px;
+        }
+        a:hover {
+            color: #BDB9AB;
+            background: #E7E5DD;
+        }
+        a span {
+            opacity: 0;
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+            transition: 0.4s ease-in-out;
+        }
+        a:hover span {
+            opacity: 1;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #BDB9AB;
         }
 
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
 
-        .show {
-            display: block;
+        .dialogButton {
+            background-color: #141414;
+            border: 1px solid rgba(54, 54, 54, 0.6);
+            font-weight: 600;
+            color: #dddddd;
+            position: relative;
+            outline: none;
+            border-radius: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            height: 45px;
+            width: 210px;
+            opacity: 1;
         }
-        .myColor {
-            color: white
+        .dialogWindow{
+            border-radius: 25px;
+            width: 200px;
+            font-weight: 600;
+        }
+        .dialogInput{
+            border-radius: 50px;
+            width: 200px;
+            font-weight: 600;
+            text-align: center;
         }
     </style>
-    <meta charset="UTF-8">
-    <title>Main page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <script>
+        let pairCoordinateVertex=[];
+        let edges=[];
+        var addVertexFlag=false;
+        var addEdgeFlag=false;
+        var indexFirstVertex=-1;
+        var indexSecondVertex=-1;
+        var name;
+        function addEdge(){
+            if(addEdgeFlag==true){
+
+            }
+        }
+        function addVertex(event) {
+            if(addVertexFlag==true) {
+                var x, y;
+                var bounds = event.target.getBoundingClientRect();
+                x = event.clientX - bounds.left;
+                y = event.clientY - bounds.top;
+                drawVertex(x,y);
+            }
+        }
+        function drawVertex(x,y){
+            console.log(x);
+            console.log(y);
+            pairCoordinateVertex.push({
+                xCoordinate: x,
+                yCoordinate: y
+            });
+            console.log(pairCoordinateVertex[pairCoordinateVertex.length-1].xCoordinate);
+            console.log(pairCoordinateVertex[pairCoordinateVertex.length-1].yCoordinate);
+            let div = document.createElement('div');
+            div.style.top=y+'px';
+            div.style.left=x+'px';
+            div.innerHTML=pairCoordinateVertex.length;
+            div.style.outline='2px solid #ff3000' ;
+            div.style.position='absolute';
+            div.style.height='50px';
+            div.style.width='50px';
+            div.style.borderRadius='50%';
+            div.style.color='#ff3000';
+            div.style.textAlign='center';
+            div.style.fontFamily='Comic Sans MS, Comic Sans, cursive';
+            div.style.fontSize='200%';
+            div.style.background='#1D1B26';
+            div.onclick=function () {
+                if(addEdgeFlag==true){
+                    if(indexFirstVertex==-1)
+                        indexFirstVertex=checkClick(x,y);
+                    else{
+                        indexSecondVertex=checkClick(x,y)
+                        if(indexSecondVertex!=-1 && indexFirstVertex!=indexSecondVertex) {
+                            drawEdge(indexFirstVertex,indexSecondVertex);
+                            indexFirstVertex=-1;
+                        }
+                        indexSecondVertex=-1;
+                    }
+                }
+            };
+            document.getElementById("test").appendChild(div);
+        }
+        function drawEdge(indexFirstVertex,indexSecondVertex){
+            let svg = document.getElementById('svgId');
+            let line = document.createElementNS('http://www.w3.org/2000/svg','line');
+            line.setAttribute('x1',parseFloat(pairCoordinateVertex[indexFirstVertex].xCoordinate)+25);
+            line.setAttribute('y1',parseFloat(pairCoordinateVertex[indexFirstVertex].yCoordinate)+25);
+            line.setAttribute('x2',parseFloat(pairCoordinateVertex[indexSecondVertex].xCoordinate)+25);
+            line.setAttribute('y2',parseFloat(pairCoordinateVertex[indexSecondVertex].yCoordinate)+25);
+            line.setAttribute('stroke','#ff0000');
+            svg.appendChild(line);
+            edges.push({
+                first:indexFirstVertex+1,
+                second:indexSecondVertex+1
+            });
+            console.info("DRAW EDGE");
+        }
+        function checkClick(x,y){
+            for(var i=0;i<pairCoordinateVertex.length;i++){
+                if(pairCoordinateVertex[i].xCoordinate==x && pairCoordinateVertex[i].yCoordinate==y) {
+                    console.log("VERTEX="+i);
+                    return i;
+                }
+            }
+            console.log("NOT FOUND")
+            return -1;
+        }
+        function chooseSystemAddVertex(){
+            addVertexFlag=true;
+            addEdgeFlag=false;
+        }
+        function chooseSystemAddEdge(){
+            addVertexFlag=false;
+            addEdgeFlag=true;
+        }
+        function saveName(){
+            name=document.querySelector('input').value;
+            sendSaveRequest();
+            closeWindow();
+        }
+
+        function sendDisplayRequest(){
+            var address="http://localhost:8080/find?name="+name;
+            console.log(address);
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", address);
+            xhr.send();
+            xhr.onload = function() {
+                if (xhr.status != 200) {
+                    alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
+                } else {
+                    let graph=JSON.parse(xhr.responseText);
+                    var listVertex=graph.vertexesList;
+                    var listEdge=graph.edgesList;
+                    for (var i=0;i<listVertex.length;i++){
+                       drawVertex(listVertex[i].xCoordinate,listVertex[i].yCoordinate);
+                    }
+                    console.log(listEdge);
+                    for(var i=0;i<listEdge.length;i++){
+                       drawEdge(listEdge[i].first-1,listEdge[i].second-1);
+                    }
+                }
+            };
+        }
+        function save() {
+            var dialog = document.getElementById("saveDialog");
+            dialog.show();
+        }
+        function closeWindow() {
+            document.getElementById("saveDialog").close();
+
+        }
+
+        function clearDrawPanel(){
+            var drawPanel=document.getElementById("test");
+            while (drawPanel.firstChild) {
+                drawPanel.removeChild(drawPanel.lastChild);
+            }
+            pairCoordinateVertex=[];
+            edges=[];
+            addVertexFlag=false;
+            addEdgeFlag=false;
+            indexFirstVertex=-1;
+            indexSecondVertex=-1;
+        }
+
+        function displayGraph(){
+            name=document.getElementById("findGraphId").value;
+            sendDisplayRequest();
+            closeFindWindow();
+        }
+
+        function sendSaveRequest(){
+            let graph = {
+                name: name,
+                vertexesList: pairCoordinateVertex,
+                edgesList: edges,
+            };
+
+            let json = JSON.stringify(graph);
+            console.log(json);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/save");
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send(json);
+        }
+        function closeFindWindow(){
+           document.getElementById("findDialog").close();
+        }
+        function getAllWorksName(){
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://localhost:8080/getAllNames");
+            xhr.send();
+            xhr.onload = function() {
+                if (xhr.status != 200) {
+                    alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
+                } else {
+                    console.log(xhr.responseText);
+                    return xhr.responseText;
+                }
+            };
+            return null;
+        }
+
+        function openFindDialog(){
+
+            var str=''; // variable to store the options
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://localhost:8080/getAllNames");
+            xhr.send();
+            xhr.onload = function() {
+                if (xhr.status != 200) {
+                    alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
+                } else {
+                    var names=xhr.responseText.split(',');
+                    if(names!=null) {
+                        for(var i=0;i<names.length;i++) {
+                                str += '<option value="' + names[i] + '" />';
+                        }
+                        console.log(str);
+                        document.getElementById("graphName").innerHTML = str;
+                        document.getElementById("findDialog").show();
+                    }
+                    else
+                        console.log("names not found");
+                }
+            };
+
+        }
+
+
+    </script>
 </head>
 <header>
-    <div class="navbar navbar-dark bg-dark shadow-sm">
-        <a class="myColor" href="/">Main page</a>
-        <a class="myColor" href="/about">About</a>
-        <a class="myColor" href="/library/add">Add</a>
-        <a class="myColor" href="/library">Library</a>
-        <a class="myColor" href="/user">Users</a>
+    <div class="top">
+        <a href="/" class="ten">MAIN</a>
+        <a href="/about" class="ten">ABOUT</a>
+        <a href="/support" class="ten">SUPPORT</a>
     </div>
 </header>
 <body>
-<img th:src="@{/images/k1.jpg}" alt="download">
+<p></p>
+<p></p>
+<div class="commonPanel">
+    <div class="commandPanel">
+        <button  class="sliding-button" onclick="chooseSystemAddVertex()">add vertex</button>
+        <p></p>
+        <button class="sliding-button" onclick="chooseSystemAddEdge()">connect vertices</button>
+        <p></p>
+        <button  class="sliding-button" onclick="save()">save</button>
+        <p></p>
+        <button  class="sliding-button" onclick="openFindDialog()">find graph</button>
+        <p></p>
+        <button  class="sliding-button">triangulate a graph</button>
+        <p></p>
+        <button  class="sliding-button" onclick="test()">clear</button>
+    </div>
+    <div id="test" class="drawPanel" onclick="addVertex(event)">
+        <svg id="svgId" width="1000" height="500">
+        </svg>
+    </div>
+
+    <dialog id="saveDialog" class="dialogWindow">
+        <p>Введите название текущей задачи</p>
+        <input id="nameTask" class="dialogInput" name="name" type="text">
+        <p></p>
+        <button type="submit" class="dialogButton" onclick="saveName()">Сохранить</button>
+        <p><button id="closeDialog" class="dialogButton" onclick="closeWindow()">Закрыть окно</button></p>
+    </dialog>
+    <dialog id="findDialog" class="dialogWindow">
+        <p>Введите название задачи</p>
+        <input id="findGraphId" type="text" class="dialogInput" name="graph" list="graphName">
+      <datalist id="graphName">
+
+      </datalist>
+        <p></p>
+        <button type="submit" class="dialogButton" onclick="displayGraph()">Отобразить граф</button>
+        <p><button id="close" class="dialogButton" onclick="closeFindWindow()">Закрыть окно</button></p>
+    </dialog>
+</div>
 </body>
 </html>

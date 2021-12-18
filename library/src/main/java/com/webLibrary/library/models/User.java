@@ -1,8 +1,11 @@
 package com.webLibrary.library.models;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Set;
 
+@Component
 @Entity
 @Table
 public class User {
@@ -11,8 +14,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-
-
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)

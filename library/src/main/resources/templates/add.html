@@ -2,98 +2,201 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <style>
+
         body {
-            background-image: url(https://user-images.githubusercontent.com/47674775/113698899-9bc12f80-96dd-11eb-8f31-79ad3e3092a8.jpg); /* Путь к фоновому изображению */
+            background: #1D1B26;
         }
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        h4{
-            margin: 20px 50px;
-        }
-        .navbar a {
-            float: left;
-            font-size: 16px;
+        .sliding-button {
+            width: 200px;
+            background: #1D1B26;
+            text-decoration: none;
             color: white;
+            display: inline-block;
+            position: relative;
+            padding: 15px 30px;
+            border: 1px solid;
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            margin: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
             text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .dropdown {
-            float: left;
             overflow: hidden;
+            letter-spacing: 2px;
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
         }
-
-        .dropdown .dropbtn {
-            cursor: pointer;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font-family: inherit;
-            margin: 0;
-        }
-
-        .navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
-            background-color: red;
-            border-radius: 100px;
-        }
-
-        .dropdown-content {
-            display: none;
+        .sliding-button:before {
+            content: "";
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            left: 0;
+            top: 0;
+            height: 0;
+            width: 100%;
+            z-index: -1;
+            color: white;
+            background: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
+        }
+        .sliding-button:hover {
+            background: rgba(255, 255, 255, 0);
+        }
+        .sliding-button:hover:before {
+            bottom: 0%;
+            top: auto;
+            height: 100%;
+        }
+        .commonPanel
+        {
+            display: flex;
+            width: 1310px;/*фиксируем ширину обертки*/
+            margin: 0 auto;/*центрируем ее*/
+        }
+        .commandPanel
+        {
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            width: 150px;
+            height: 400px;
+        }
+        .drawPanel
+        {
+            position: relative;
+            margin-left: 200px;
+            width: 1000px;	height: 500px; /* Размеры */
+            outline: 2px solid darkgray; /* Чёрная рамка */
+            border-radius: 10px; /* Радиус скругления */
+        }
+        .top
+        {
+            align-items: center;
+            display: flex;
+            width: 1520px;/*фиксируем ширину обертки*/
+            height: 45px;
+            background: darkgray;
         }
 
-        .dropdown-content a {
+
+        a {
             float: none;
-            color: black;
             padding: 12px 16px;
-            text-decoration: none;
             display: block;
             text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none;
+            margin-top: 1px;
+            margin-right: 300px;
+            margin-left: 140px;
+            width: 150px;
+            height:15px;
+            color: #E7E5DD;
+            border-radius: 30px;
+        }
+        a:hover {
+            color: #BDB9AB;
+            background: #E7E5DD;
+        }
+        a span {
+            opacity: 0;
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+            transition: 0.4s ease-in-out;
+        }
+        a:hover span {
+            opacity: 1;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #BDB9AB;
         }
 
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-
-        .show {
-            display: block;
-        }
-        .myColor {
-            color: white
-        }
     </style>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <script>
+        let pairCoordinateVertex=[];
+        let edges=[];
+        var name;
+
+        function getMouseCoordinates(event) {
+            var x, y;
+            x = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            y = event.clientY + document.body.scrollTop + document.documentElement.scrollTop + 1;
+            console.log(x);
+            console.log(y);
+            pairCoordinateVertex.push({
+                xCoordinate:x,
+                yCoordinate:y
+            });
+            console.log(pairCoordinateVertex.length);
+            return [x, y];
+        }
+        function saveGraph(){
+
+        }
+        function saveName(){
+            name=document.querySelector('input').value;
+            edges.push({
+                first:"1",
+                second:"2"
+            })
+            sendSaveRequest();
+            close();
+        }
+        function sendSaveRequest(){
+            let graph = {
+                name: name,
+                vertexesList: pairCoordinateVertex,
+                edgesList: edges,
+            };
+
+            let json = JSON.stringify(graph);
+            console.log(json);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/about");
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send(json);
+        }
+        function save() {
+            var dialog = document.getElementById("saveDialog");
+            dialog.show();
+        }
+        function close() {
+            var dialog = document.getElementById("saveDialog");
+            dialog.close();
+        }
+
+    </script>
+
 </head>
 <header>
-    <div class="navbar navbar-dark bg-dark shadow-sm">
-        <a class="myColor" href="/">Main page</a>
-        <a class="myColor" href="/about">About</a>
-        <a class="myColor" href="/library/add">Add</a>
-        <a class="myColor" href="/library">Library</a>
-        <a class="myColor" href="/user">Users</a>
+    <div class="top">
+        <a href="/about" class="ten">MAIN</a>
+        <a href="/about" class="ten">ABOUT</a>
+        <a href="/about" class="ten">INSTRUMENT</a>
     </div>
 </header>
 <body>
-    <div class="container mt-5">
-        <form th:action="@{/library/add}" method="post">
-            <input type="text" name="title" placeholder="input title of book" class="form-control"><br>
-            <input type="text" name="nameOfAuthor" placeholder="input name of author" class="form-control"><br>
-            <textarea type="text" name="description" placeholder="input description" class="form-control"></textarea><br>
-            <button type="submit" class="btn btn-success">Add book</button>
-        </form>
+<p></p>
+<p></p>
+<div class="commonPanel">
+    <div class="commandPanel">
+        <button  class="sliding-button">add vertex</button>
+        <p></p>
+        <button class="sliding-button">connect vertices</button>
+        <p></p>
+        <button  class="sliding-button" onclick="save()">save</button>
+        <p></p>
+        <button  class="sliding-button">open file</button>
+        <p></p>
+        <button  class="sliding-button">triangulate a graph</button>
     </div>
+    <div id="test" class="drawPanel" onclick="getMouseCoordinates(event)"/>
+
+    <dialog id="saveDialog">
+        <p>Введите название текущей задачи</p>
+        <input id="nameTask" name="name" type="text">
+        <button type="submit" onclick="saveName()">Сохранить</button>
+        <p><button id="closeDialog" onclick="close()">Закрыть окно</button></p>
+    </dialog>
+</div>
 </body>
 </html>

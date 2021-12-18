@@ -1,106 +1,289 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script src="js/drawService.js"></script>
+<link rel="stylesheet" type="text/css" href="css/drawStyle.css">
 <head>
+
+
     <style>
-
         body {
-            background-image: url(https://user-images.githubusercontent.com/47674775/113698899-9bc12f80-96dd-11eb-8f31-79ad3e3092a8.jpg); /* Путь к фоновому изображению */
+            background: #1D1B26;
         }
-        .navbar {
-            overflow: hidden;
-            background-color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .h2{
-            color: #dddddd;
-            font-size: 50%;
-        }
-        .h1 {
-            color: #dddddd;
-            font-family: 'Times New Roman', Times, serif; /* Гарнитура текста */
-            font-size: 50%; /* Размер шрифта в процентах */
-        }
-        .navbar a {
-            float: left;
-            font-size: 16px;
+        .sliding-button {
+            width: 200px;
+            background: #1D1B26;
+            text-decoration: none;
             color: white;
+            display: inline-block;
+            position: relative;
+            padding: 15px 30px;
+            border: 1px solid;
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            margin: 10px 20px;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
             text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        .dropdown {
-            float: left;
             overflow: hidden;
+            letter-spacing: 2px;
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
         }
-
-        .dropdown .dropbtn {
-            cursor: pointer;
-            font-size: 16px;
-            border: none;
-            outline: none;
-            color: white;
-            padding: 14px 16px;
-            background-color: inherit;
-            font-family: inherit;
-            margin: 0;
-        }
-
-        .navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
-            background-color: red;
-            border-radius: 100px;
-        }
-
-        .dropdown-content {
-            display: none;
+        .sliding-button:before {
+            content: "";
             position: absolute;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
+            left: 0;
+            top: 0;
+            height: 0;
+            width: 100%;
+            z-index: -1;
+            color: white;
+            background: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            transition: .8s cubic-bezier(.165, .84, .44, 1);
+        }
+        .sliding-button:hover {
+            background: rgba(255, 255, 255, 0);
+        }
+        .sliding-button:hover:before {
+            bottom: 0%;
+            top: auto;
+            height: 100%;
+        }
+        .commonPanel
+        {
+            display: flex;
+            width: 1310px;/*фиксируем ширину обертки*/
+            margin: 0 auto;/*центрируем ее*/
+        }
+        .commandPanel
+        {
+            border-image: linear-gradient(180deg, #ff3000, #ed0200, #ff096c, #d50082);
+            border-image-slice: 1;
+            width: 150px;
+            height: 400px;
+        }
+        .drawPanel
+        {
+            overflow-y: auto;
+            position: relative;
+            margin-left: 200px;
+            width: 1000px;	min-height: 500px; /* Размеры */
+            outline: 2px solid darkgray; /* Чёрная рамка */
+            border-radius: 10px; /* Радиус скругления */
+            display: flex;
+        }
+        .top
+        {
+            align-items: center;
+            display: flex;
+            width: 1520px;/*фиксируем ширину обертки*/
+            height: 45px;
+            background: darkgray;
         }
 
-        .dropdown-content a {
+
+        a {
             float: none;
-            color: black;
             padding: 12px 16px;
-            text-decoration: none;
             display: block;
             text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none;
+            margin-top: 1px;
+            margin-right: 300px;
+            margin-left: 140px;
+            width: 150px;
+            height:15px;
+            color: #E7E5DD;
+            border-radius: 30px;
+        }
+        a:hover {
+            color: #BDB9AB;
+            background: #E7E5DD;
+        }
+        a span {
+            opacity: 0;
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+            transition: 0.4s ease-in-out;
+        }
+        a:hover span {
+            opacity: 1;
+            padding-left: 10px;
+            padding-right: 10px;
+            color: #BDB9AB;
         }
 
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-
-        .show {
-            display: block;
-        }
 
     </style>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <script>
+        let pairCoordinateVertex=[];
+        let edges=[];
+        var addVertexFlag=false;
+        var addEdgeFlag=false;
+        var indexFirstVertex=-1;
+        var indexSecondVertex=-1;
+        var name;
+        function addEdge(){
+            if(addEdgeFlag==true){
+
+            }
+        }
+        function addVertex(event) {
+            if(addVertexFlag==true) {
+                var x, y;
+                var bounds = event.target.getBoundingClientRect();
+                x = event.clientX - bounds.left;
+                y = event.clientY - bounds.top;
+                console.log(x);
+                console.log(y);
+                pairCoordinateVertex.push({
+                    xCoordinate: x,
+                    yCoordinate: y
+                });
+                console.log(pairCoordinateVertex.length);
+                let div = document.createElement('div');
+                 div.style.top=y+'px';
+                 div.style.left=x+'px';
+                 div.innerHTML=pairCoordinateVertex.length;
+                 div.style.outline='2px solid #ff3000' ;
+                 div.style.position='absolute';
+                 div.style.height='50px';
+                 div.style.width='50px';
+                 div.style.borderRadius='50%';
+                 div.style.color='#ff3000';
+                 div.style.textAlign='center';
+                 div.style.fontFamily='Comic Sans MS, Comic Sans, cursive';
+                 div.style.fontSize='200%';
+                 div.onclick=function () {
+                     if(addEdgeFlag==true){
+                               if(indexFirstVertex==-1)
+                                  indexFirstVertex=checkClick(x,y);
+                            else{
+                              indexSecondVertex=checkClick(x,y)
+                             if(indexSecondVertex!=-1 && indexFirstVertex!=indexSecondVertex) {
+                               drawEdge(indexFirstVertex,indexSecondVertex);
+                             indexFirstVertex=-1;
+                         }
+                         indexSecondVertex=-1;
+                            }
+                     }
+                 };
+                 document.getElementById("test").appendChild(div);
+            }
+        }
+        function drawEdge(indexFirstVertex,indexSecondVertex){
+            var canvas = document.getElementById('test');
+
+                var ctx = canvas.getContext('2d');
+
+                // Filled triangle
+                ctx.beginPath();
+                ctx.moveTo(pairCoordinateVertex[indexFirstVertex].xCoordinate,pairCoordinateVertex[indexSecondVertex.yCoordinate]);
+                ctx.lineTo(pairCoordinateVertex[indexSecondVertex].xCoordinate,pairCoordinateVertex[indexSecondVertex].yCoordinate);
+               // ctx.fill();
+                console.info("DRAW EDGE");
+        }
+        function checkClick(x,y){
+            for(var i=0;i<pairCoordinateVertex.length;i++){
+                if(pairCoordinateVertex[i].xCoordinate==x && pairCoordinateVertex[i].yCoordinate==y) {
+                    console.log("VERTEX="+i);
+                    return i;
+                }
+            }
+            console.log("NOT FOUND")
+            return -1;
+        }
+        function chooseSystemAddVertex(){
+            addVertexFlag=true;
+            addEdgeFlag=false;
+        }
+        function chooseSystemAddEdge(){
+            addVertexFlag=false;
+            addEdgeFlag=true;
+        }
+        function saveName(){
+            name=document.querySelector('input').value;
+            edges.push({
+                first:"1",
+                second:"2"
+            })
+            sendSaveRequest();
+            close();
+        }
+        function sendSaveRequest(){
+            let graph = {
+                name: name,
+                vertexesList: pairCoordinateVertex,
+                edgesList: edges,
+            };
+
+            let json = JSON.stringify(graph);
+            console.log(json);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/about");
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send(json);
+        }
+        function save() {
+            var dialog = document.getElementById("saveDialog");
+            dialog.show();
+        }
+        function close() {
+            var dialog = document.getElementById("saveDialog");
+            dialog.close();
+        }
+
+        function clearDrawPanel(){
+            var drawPanel=document.getElementById("test");
+            while (drawPanel.firstChild) {
+                drawPanel.removeChild(drawPanel.lastChild);
+            }
+             pairCoordinateVertex=[];
+             edges=[];
+             addVertexFlag=false;
+             addEdgeFlag=false;
+             indexFirstVertex=-1;
+             indexSecondVertex=-1;
+
+        }
+    </script>
 </head>
 <header>
-    <div class="navbar navbar-dark bg-dark shadow-sm">
-        <a class="myColor" href="/">Main page</a>
-        <a class="myColor" href="/about">About</a>
-        <a class="myColor" href="/library/add">Add</a>
-        <a class="myColor" href="/library">Library</a>
-        <a class="myColor" href="/user">Users</a>
+    <div class="top">
+        <a href="/" class="ten">MAIN</a>
+        <a href="/about" class="ten">ABOUT</a>
+        <a href="/support" class="ten">SUPPORT</a>
     </div>
 </header>
 <body>
-
-<div class="h4">
-        <div class="h1">About</div><br>
-    <div class="h2"> This site was written to study the spring framework,</div>
-<div class="h2">or rather spring boot and spring security, its main functionality is </div>
-      <div class="h2"> to store, delete, and edit objects from the database, authorization</div>
-</div>
+<p></p>
+<p></p>
+<div class="commonPanel">
+    <div class="commandPanel">
+        <button  class="sliding-button" onclick="chooseSystemAddVertex()">add vertex</button>
+        <p></p>
+        <button class="sliding-button" onclick="chooseSystemAddEdge()">connect vertices</button>
+        <p></p>
+        <button  class="sliding-button" onclick="save()">save</button>
+        <p></p>
+        <button  class="sliding-button">find graph</button>
+        <p></p>
+        <button  class="sliding-button">triangulate a graph</button>
+        <p></p>
+        <button  class="sliding-button" onclick="clearDrawPanel()">clear</button>
+    </div>
+    <div id="test" class="drawPanel" onclick="addVertex(event)">
 
     </div>
+
+    <dialog id="saveDialog">
+        <p>Введите название текущей задачи</p>
+        <input id="nameTask" name="name" type="text">
+        <button type="submit" onclick="saveName()">Сохранить</button>
+        <p><button id="closeDialog" onclick="close()">Закрыть окно</button></p>
+    </dialog>
 </div>
 </body>
 </html>
